@@ -1,123 +1,21 @@
 <template>
     <div class="window">
-      <!-- .toolbar-header sits at the top of your app -->
-      <!-- <header class="toolbar toolbar-header">
-        <h1 class="title">Photon</h1>
-      </header> -->
-      <!-- Your app's content goes inside .window-content -->
       <div class="window-content">
         <div class="pane-group">
           <div class="pane pane-sm sidebar">
             <nav class="nav-group">
               <h5 class="nav-group-title">最近的粘贴板</h5>
-              <span class="nav-group-item">
-                <span class="icon icon-home"></span>
-                connors
-              </span>
-              <span class="nav-group-item active" @click="showRecentClip">
-                <span class="icon icon-light-up"></span>
-                Photon
+              <span class="nav-group-item" :class="[activeIndex == index ? 'active' : '']" v-for="(item, index) in clipList" :key="index" @click="handleClick(item, index)">
+                  {{item.content}}
               </span>
             </nav>
           </div>
 
-          <div class="pane">
-            <table class="table-striped">
-              <thead>
-                <tr>
-                  <th>内容</th>
-                  <th>时间</th>
-                  <th>类型</th>
-                  <th>操作</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>bars.scss</td>
-                  <td>2019-10-20 22:22:22</td>
-                  <td>文字</td>
-                  <td><button class="btn btn-negative">delete</button></td>
-                </tr>
-                <tr>
-                  <td>base.scss</td>
-                  <td>Document</td>
-                  <td>Oct 13, 2015</td>
-                  <td>connors</td>
-                </tr>
-                <tr>
-                  <td>button-groups.scss</td>
-                  <td>Document</td>
-                  <td>Oct 13, 2015</td>
-                  <td>connors</td>
-                </tr>
-                <tr>
-                  <td>buttons.scss</td>
-                  <td>Document</td>
-                  <td>Oct 13, 2015</td>
-                  <td>connors</td>
-                </tr>
-                <tr>
-                  <td>docs.scss</td>
-                  <td>Document</td>
-                  <td>Oct 13, 2015</td>
-                  <td>connors</td>
-                </tr>
-                <tr>
-                  <td>forms.scss</td>
-                  <td>Document</td>
-                  <td>Oct 13, 2015</td>
-                  <td>connors</td>
-                </tr>
-                <tr>
-                  <td>grid.scss</td>
-                  <td>Document</td>
-                  <td>Oct 13, 2015</td>
-                  <td>connors</td>
-                </tr>
-                <tr>
-                  <td>icons.scss</td>
-                  <td>Document</td>
-                  <td>Oct 13, 2015</td>
-                  <td>connors</td>
-                </tr>
-                <tr>
-                  <td>images.scss</td>
-                  <td>Document</td>
-                  <td>Oct 13, 2015</td>
-                  <td>connors</td>
-                </tr>
-                <tr>
-                  <td>lists.scss</td>
-                  <td>Document</td>
-                  <td>Oct 13, 2015</td>
-                  <td>connors</td>
-                </tr>
-                <tr>
-                  <td>mixins.scss</td>
-                  <td>Document</td>
-                  <td>Oct 13, 2015</td>
-                  <td>connors</td>
-                </tr>
-                <tr>
-                  <td>navs.scss</td>
-                  <td>Document</td>
-                  <td>Oct 13, 2015</td>
-                  <td>connors</td>
-                </tr>
-                <tr>
-                  <td>normalize.scss</td>
-                  <td>Document</td>
-                  <td>Oct 13, 2015</td>
-                  <td>connors</td>
-                </tr>
-                <tr>
-                  <td>photon.scss</td>
-                  <td>Document</td>
-                  <td>Oct 13, 2015</td>
-                  <td>connors</td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="pane main-content">
+            <div class="content">
+              {{showItem.content}}
+            </div>
+            <span class="icon icon-clock"></span> 时间： {{showItem.time}}
           </div>
         </div>
       </div>
@@ -125,21 +23,51 @@
 </template>
 
 <script>
-import {clipboard, Tray} from 'electron'
+import {clipboard, ipcRenderer} from 'electron'
+import { dataStore } from '../../util/clipStore'
+const fs = require('fs')
+let clipList = []
 export default {
   data () {
-    return {}
+    return {
+      clipList,
+      showItem: {},
+      activeIndex: 0
+    }
   },
   methods: {
     showRecentClip () {
-      console.log(234)
       console.log(clipboard.readText('selection'))
-      console.log(new Tray(clipboard.readImage()))
+    },
+    handleClick (item, index) {
+      this.showItem = item
+      this.activeIndex = index
+    },
+    sendToMain () {
+      ipcRenderer.send('')
     }
+  },
+  mounted () {
+    this.clipList = dataStore.getTracks()
+    this.showItem = this.clipList[0] || {}
+    fs.watch('/Users/zx/Library/Application Support/Electron/config.json', () => {
+      console.log(this.clipList = dataStore.getTracks())
+    })
   }
 }
 </script>
 
 <style lang="scss">
-  // @import '../../assets/css/photon.min.css';
+  .window .window-content .pane {
+    &.sidebar {
+      flex: 0 0 auto;
+    }
+    &.main-content {
+      text-align: center;
+    }
+    .content {
+      padding: 40px;
+      font-size: 36px;
+    }
+  }
 </style>

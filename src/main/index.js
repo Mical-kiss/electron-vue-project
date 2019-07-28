@@ -1,9 +1,5 @@
-import { app, BrowserWindow, Tray, Notification, Menu } from 'electron'
-
-/**
- * Set `__static` path to static files in production
- * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
- */
+import { app, BrowserWindow, Tray, Menu, globalShortcut, clipboard } from 'electron'
+import { dataStore } from '../util/clipStore'
 if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
@@ -22,25 +18,21 @@ function createWindow () {
     icon: '/Users/zx/Downloads/tinypng_output/b.png'
   })
   const contextMenu = Menu.buildFromTemplate([
-    { label: 'Item1', type: 'radio' },
-    { label: 'Item2', type: 'radio' },
-    { label: 'Item3', type: 'radio', checked: true },
-    { label: 'Item4', type: 'radio' }
+    { label: 'enable save clipboard',
+      type: 'radio',
+      checked: true,
+      click () {
+        console.log(111)
+      }
+    },
+    { label: 'quiet', type: 'radio' }
   ])
   appIcon.setToolTip('This is my application.')
   appIcon.setContextMenu(contextMenu)
-  appIcon.on('mouse-enter', () => {
-    console.log(111)
+  globalShortcut.register('CommandOrControl+1', () => {
+    console.log(clipboard.readText('selection'))
+    dataStore.addTrack(clipboard.readText('selection'))
   })
-  setTimeout(() => {
-    const myNotice = new Notification({
-      title: '重要通知',
-      body: '明天之后放假',
-      sound: ''
-    })
-    // myNotice.show()
-    console.log(myNotice)
-  }, 2000)
   mainWindow.loadURL(winURL)
 
   mainWindow.on('closed', () => {
