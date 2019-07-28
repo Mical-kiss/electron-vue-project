@@ -64,6 +64,11 @@ const dataStore = {
     })]
     // this.tracks = [...this.tracks, ...tracksWithProps]
     return this.saveTracks(tracks)
+  },
+  delTracks (index) {
+    let tracks = this.getTracks()
+    tracks.splice(index, 1)
+    return this.saveTracks(tracks)
   }
 }
 export { dataStore }

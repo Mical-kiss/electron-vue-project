@@ -12,9 +12,9 @@ const winURL = process.env.NODE_ENV === 'development'
 function createWindow () {
   const appIcon = new Tray('/Users/zx/Downloads/00chromeDonwload/矩形@2x.png')
   mainWindow = new BrowserWindow({
-    height: 563,
+    height: 500,
     useContentSize: false,
-    width: 1000,
+    width: 700,
     icon: '/Users/zx/Downloads/tinypng_output/b.png'
   })
   const contextMenu = Menu.buildFromTemplate([
@@ -30,7 +30,6 @@ function createWindow () {
   appIcon.setToolTip('This is my application.')
   appIcon.setContextMenu(contextMenu)
   globalShortcut.register('CommandOrControl+1', () => {
-    console.log(clipboard.readText('selection'))
     dataStore.addTrack(clipboard.readText('selection'))
   })
   mainWindow.loadURL(winURL)
