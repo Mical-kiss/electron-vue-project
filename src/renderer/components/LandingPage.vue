@@ -60,19 +60,21 @@ export default {
         message: '确认删除？',
         buttons: ['cancel', 'del']
       },
-      function (res) {
-        console.log(res)
-        if (res) dataStore.delTracks(index)
+      (res) => {
+        if (res) {
+          dataStore.delTracks(index)
+          this.sendToMain(index)
+        }
       })
     },
-    sendToMain () {
-      ipcRenderer.send('')
+    sendToMain (index) {
+      ipcRenderer.send('deleteMessage', index)
     }
   },
   mounted () {
     this.clipList = dataStore.getTracks()
     this.showItem = this.clipList[0] || {}
-    fs.watch('/Users/zx/Library/Application Support/Electron/config.json', () => {
+    fs.watch('/Users/zx/Library/Application Support/vue-project/config.json', () => {
       this.clipList = dataStore.getTracks()
       this.activeIndex++
     })
@@ -91,6 +93,13 @@ export default {
     }
     .nav-group-item {
       display: flex;
+      padding: 6px 10px;
+      &:hover {
+        background: #dcdfe1;
+        .btn {
+          display: block;
+        }
+      }
       .des {
         flex: 1;
         overflow: hidden;
@@ -98,7 +107,10 @@ export default {
         white-space: nowrap;
       }
       .btn {
+        display: none;
         margin-right: 4px;
+        line-height: 1;
+        height: auto;
       }
     }
     .content {
