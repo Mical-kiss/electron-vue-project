@@ -1,4 +1,5 @@
-import { app, BrowserWindow, Tray, Menu, globalShortcut, clipboard, ipcMain, Notification } from 'electron'
+import { app, BrowserWindow, globalShortcut, clipboard, ipcMain, Notification } from 'electron'
+// import { app, BrowserWindow, Tray, Menu, globalShortcut, clipboard, ipcMain, Notification } from 'electron'
 import { dataStore } from '../util/clipStore'
 if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
@@ -11,14 +12,14 @@ const winURL = process.env.NODE_ENV === 'development'
   : `file://${__dirname}/index.html`
 
 function createWindow () {
-  const appIcon = new Tray('/Users/zx/Downloads/00chromeDonwload/矩形@2x.png')
+  // const appIcon = new Tray('/Users/zx/Downloads/00chromeDonwload/矩形复制 15@2x.png')
   mainWindow = new BrowserWindow({
     height: 500,
     useContentSize: false,
     width: 700,
     icon: '/Users/zx/Downloads/tinypng_output/b.png'
   })
-  const contextMenu = Menu.buildFromTemplate([
+  /* const contextMenu = Menu.buildFromTemplate([
     { label: 'enable save clipboard',
       type: 'checkbox',
       checked: true,
@@ -32,13 +33,14 @@ function createWindow () {
         app.quit()
       }
     }
-  ])
-  appIcon.setToolTip('This is my application.')
-  appIcon.setContextMenu(contextMenu)
+  ]) */
+  // appIcon.setToolTip('This is my application.')
+  // appIcon.setContextMenu(contextMenu)
 
   globalShortcut.register('CommandOrControl+1', () => {
-    console.log(clipboard.readText('selection'))
-    console.log(clipboard.readImage('selection'))
+    // console.log(clipboard.readText('selection'))
+    // console.log(clipboard.readImage('selection'))
+    // console.log('enableClipFlag:' + enableClipFlag)
     if (!enableClipFlag) return
     dataStore.addTrack(clipboard.readText('selection'))
   })

@@ -31,7 +31,8 @@
 <script>
 import {clipboard, ipcRenderer, remote} from 'electron'
 import { dataStore } from '../../util/clipStore'
-const fs = require('fs')
+import fs from 'fs'
+// const fs = require('fs')
 let clipList = []
 let {dialog} = remote
 export default {
@@ -74,7 +75,12 @@ export default {
   mounted () {
     this.clipList = dataStore.getTracks()
     this.showItem = this.clipList[0] || {}
-    fs.watch('/Users/zx/Library/Application Support/vue-project/config.json', () => {
+    /* fs.watchFile('/Users/zx/Library/Application Support/Electron/config.json', () => {
+      console.log(123)
+      this.clipList = dataStore.getTracks()
+      this.activeIndex++
+    }) */
+    fs.watchFile('/Users/zx/Library/Application Support/vue-project/config.json', () => {
       this.clipList = dataStore.getTracks()
       this.activeIndex++
     })
